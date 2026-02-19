@@ -7,26 +7,35 @@
 import UIKit
 
 class Circle: Shape {
-    var radius: CGFloat
+
 
     required init(origin: CGPoint, color: UIColor) {
-        self.radius = 0
+        //size is radius
         super.init(origin: origin, color: color)
     }
     
     override func draw() {
-        let path = UIBezierPath(arcCenter: center, radius: radius, startAngle: 0, endAngle: 2 * .pi, clockwise: true)
         
-        //Filled
-//        color.setFill()
-//        path.fill()
+        if cachedPath == nil || cachedPath?.bounds.size.width != size || cachedPath?.bounds.origin != center {
+            cachedPath = UIBezierPath(arcCenter: center, radius: size, startAngle: 0, endAngle: 2 * .pi, clockwise: true)
+            
+        }
         
+ 
         UIColor.black.setStroke()
-        path.stroke()
+        if let path = cachedPath {
+            // fill
+            color.setFill()
+            path.fill()
+
+            // outline
+            UIColor.black.setStroke()
+            path.stroke()
+        }
     }
     
     override func contains(point: CGPoint) -> Bool {
         let distance = Functions.distance(a: center, b: point)
-        return distance <= radius
+        return distance <= size
     }
 }

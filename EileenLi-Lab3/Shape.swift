@@ -15,10 +15,25 @@ import UIKit
 
 /// A `DrawingItem` that draws some shape to the screen.
 class Shape: DrawingItem {
-    var center: CGPoint
     var color: UIColor
+    var cachedPath: UIBezierPath?
+    
+    var center: CGPoint {
+        didSet {
+            // delete old path when center changed
+            cachedPath = nil
+        }
+    }
+    
+    var size: CGFloat {
+        didSet {
+            // delete old path when size changed
+            cachedPath = nil
+        }
+    }
     
     public required init(origin: CGPoint, color: UIColor){
+        self.size = 50
         self.center = origin
         self.color = color
     }

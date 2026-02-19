@@ -10,10 +10,9 @@ import UIKit
 class ViewController: UIViewController {
     //Reminder: make an array and just add one subview (instead of creating a new subview for every shape)
 
-    
+    var selectedShapeType = "Circle"
     var currShapeCenter = CGPoint(x: 0, y: 0)
-    var currShape: Circle?
-
+    var currShape: Shape?
     
     var currColor = UIColor.red
 
@@ -29,7 +28,17 @@ class ViewController: UIViewController {
         print("began at \(touchPoint)")
         
         currShapeCenter = touchPoint
-        currShape = Circle(origin:touchPoint, color: currColor) //TODO: handle other shapes
+        print("new \(self.selectedShapeType)")
+        switch self.selectedShapeType {
+            case "Circle":
+                currShape = Circle( origin:touchPoint, color: currColor)
+            case "Square":
+                currShape = Square( origin:touchPoint, color: currColor)
+            case "Triangle":
+                currShape = Triangle( origin:touchPoint, color: currColor)
+            default:
+                break
+        }
         
         //add shape to array
         if let newCircle = currShape {
@@ -41,11 +50,10 @@ class ViewController: UIViewController {
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         let touchPoint = touches.first!.location(in: drawingCanvas)
-        print("moved to \(touchPoint)")
-        
+
         let distance = Functions.distance(a: touchPoint, b: (currShapeCenter))
         
-        currShape?.radius = CGFloat(distance)
+        currShape?.size = CGFloat(distance)
         
         drawingCanvas.setNeedsDisplay()
 
@@ -61,6 +69,25 @@ class ViewController: UIViewController {
     }
 
 
+    @IBAction func shapeSelectorChanged(_ sender: UISegmentedControl) {
+        let selectedIndex = sender.selectedSegmentIndex
+        
+        switch selectedIndex {
+            case 0:
+                print("Circle selected")
+                selectedShapeType = "Circle"
+            case 1:
+                print("Square selected")
+                self.selectedShapeType = "Square"
+            case 2:
+                print("Triangle selected")
+                self.selectedShapeType = "Triangle"
+            default:
+                break
+        }
+    }
+    
+    
     @IBAction func ClearScreen(_ sender: Any) {
         drawingCanvas?.items = []
     }
