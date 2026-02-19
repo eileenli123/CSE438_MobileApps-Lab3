@@ -87,6 +87,25 @@ class ViewController: UIViewController {
         }
     }
     
+    @IBAction func colorSelectorChanged(_ sender: UISegmentedControl) {
+
+        switch sender.selectedSegmentIndex {
+            case 0:
+            self.currColor = .red
+            case 1:
+            self.currColor = .yellow
+            case 2:
+            self.currColor = .green
+            case 3:
+            self.currColor = .blue
+            case 4:
+            self.currColor = .purple
+            
+            default:
+                break
+        }
+        
+    }
     
     @IBAction func ClearScreen(_ sender: Any) {
         drawingCanvas?.items = []
