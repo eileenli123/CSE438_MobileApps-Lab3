@@ -9,7 +9,11 @@ import UIKit
 
 class Square: Shape {
 
-    required init(origin: CGPoint, color: UIColor) {
+    required override init(origin: CGPoint, color: UIColor, isFilled: Bool) {
+        super.init(origin: origin, color: color, isFilled: isFilled)  
+    }
+    
+    public required init(origin: CGPoint, color: UIColor) {
         super.init(origin: origin, color: color)
     }
     
@@ -22,13 +26,17 @@ class Square: Shape {
 
         // Use the cached path for drawing
         if let path = cachedPath {
-            // fill
-            color.setFill()
-            path.fill()
-
-            // outline
-            UIColor.black.setStroke()
-            path.stroke()
+            
+            if isFilled {
+                // fill
+                color.setFill()
+                path.fill()
+            } else {
+                // outline
+                color.setStroke()
+                path.stroke()
+            }
+            
         }
     }
     

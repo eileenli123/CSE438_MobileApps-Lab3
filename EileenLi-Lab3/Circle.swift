@@ -9,8 +9,11 @@ import UIKit
 class Circle: Shape {
 
 
-    required init(origin: CGPoint, color: UIColor) {
-        //size is radius
+    required override init(origin: CGPoint, color: UIColor, isFilled: Bool) {
+        super.init(origin: origin, color: color, isFilled: isFilled)  // Call the superclass initializer
+    }
+    
+    public required init(origin: CGPoint, color: UIColor) {
         super.init(origin: origin, color: color)
     }
     
@@ -22,15 +25,17 @@ class Circle: Shape {
         }
         
  
-        UIColor.black.setStroke()
         if let path = cachedPath {
-            // fill
-            color.setFill()
-            path.fill()
-
-            // outline
-            UIColor.black.setStroke()
-            path.stroke()
+            
+            if isFilled {
+                // fill
+                color.setFill()
+                path.fill()
+            } else {
+                // outline
+                color.setStroke()
+                path.stroke()
+            }
         }
     }
     

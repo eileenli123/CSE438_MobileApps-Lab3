@@ -17,21 +17,19 @@ import UIKit
 class Shape: DrawingItem {
     var color: UIColor
     var cachedPath: UIBezierPath?
-    
+    var isFilled: Bool = true
     var rotation : CGFloat {
         didSet {
             // delete old path when orientation changed
             cachedPath = nil
         }
     }
-    
     var center: CGPoint {
         didSet {
             // delete old path when center changed
             cachedPath = nil
         }
     }
-    
     var size: CGFloat {
         didSet {
             // delete old path when size changed
@@ -39,11 +37,22 @@ class Shape: DrawingItem {
         }
     }
     
+    //required from drawingItem
     public required init(origin: CGPoint, color: UIColor){
+        self.size = 50
+        self.rotation = 0
+        self.center = origin
+        self.color = color
+        self.isFilled = true
+    }
+    
+    //additional attr of isFilled
+    public init(origin: CGPoint, color: UIColor, isFilled: Bool){
         self.size = 50
         self.rotation = .pi
         self.center = origin
         self.color = color
+        self.isFilled = isFilled
     }
 
 

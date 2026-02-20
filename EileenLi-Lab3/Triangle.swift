@@ -10,11 +10,15 @@ import UIKit
 
 class Triangle: Shape {
     
-    required init(origin: CGPoint, color: UIColor) {
-        //size is edge length
+    
+    required override init(origin: CGPoint, color: UIColor, isFilled: Bool) {
+        super.init(origin: origin, color: color, isFilled: isFilled) 
+    }
+    public required init(origin: CGPoint, color: UIColor) {
         super.init(origin: origin, color: color)
     }
     
+
     override func draw() {
         // size or position changed --> recalculate path
         if cachedPath == nil || cachedPath?.bounds.size.width != size || cachedPath?.bounds.origin != center {
@@ -35,13 +39,14 @@ class Triangle: Shape {
         
         // Use the cached path for drawing
         if let path = cachedPath {
-            // fill
-            color.setFill()
-            path.fill()
-            
-            // outline
-            UIColor.black.setStroke()
-            path.stroke()
+            if isFilled {
+                color.setFill()
+                path.fill()
+            } else {
+                // outline
+                color.setStroke()
+                path.stroke()
+            }
         }
     }
     

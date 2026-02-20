@@ -26,6 +26,7 @@ class ViewController: UIViewController {
     var selectedShapeType: ShapeOptions = .circle
     var selectedMode: EditModes = .draw
     var currColor = UIColor.red
+    var filledShape = true
     
     
     var currShapeCenter = CGPoint(x: 0, y: 0)
@@ -73,11 +74,11 @@ class ViewController: UIViewController {
             print("new \(self.selectedShapeType)")
             switch self.selectedShapeType {
                 case .circle:
-                    currShape = Circle(origin: touchPoint, color: currColor)
+                    currShape = Circle(origin: touchPoint, color: currColor, isFilled: filledShape)
                 case .square:
-                    currShape = Square(origin: touchPoint, color: currColor)
+                    currShape = Square(origin: touchPoint, color: currColor, isFilled: filledShape)
                 case .triangle:
-                    currShape = Triangle(origin: touchPoint, color: currColor)
+                    currShape = Triangle(origin: touchPoint, color: currColor, isFilled: filledShape)
             }
             
             //add shape to array
@@ -208,6 +209,10 @@ class ViewController: UIViewController {
             default:
                 break
         }
+    }
+    
+    @IBAction func fillToggleChanged(_ sender: UISwitch) {
+        self.filledShape = sender.isOn
     }
     
     @IBAction func ClearScreen(_ sender: Any) {
