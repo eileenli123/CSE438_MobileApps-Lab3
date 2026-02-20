@@ -49,12 +49,14 @@ class Triangle: Shape {
     
     
     override func contains(point: CGPoint) -> Bool {
-        // Check if the point is inside the box bounding square
-        let minX = center.x - size
-        let maxX = center.x + size
-        let minY = center.y - size
-        let maxY = center.y + size
+        //check cricle inside triangle 
+        let width = size * 2
+        let height = width * 0.866
         
-        return point.x >= minX && point.x <= maxX && point.y >= minY && point.y <= maxY
+        let radius = height / 2
+        
+        let distance = Functions.distance(a: point, b: center)
+        
+        return distance <= radius
     }
 }

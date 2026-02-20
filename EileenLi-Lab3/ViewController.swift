@@ -10,7 +10,21 @@ import UIKit
 class ViewController: UIViewController {
     //Reminder: make an array and just add one subview (instead of creating a new subview for every shape)
 
-    var selectedShapeType = "Circle"
+    enum ShapeOptions {
+        case circle
+        case square
+        case triangle
+    }
+    
+    enum EditModes {
+        case draw
+        case move
+        case erase
+    }
+    
+    var selectedShapeType: ShapeOptions = .circle
+    var selectedMode: EditModes = .draw
+    
     var currShapeCenter = CGPoint(x: 0, y: 0)
     var currShape: Shape?
     
@@ -23,39 +37,56 @@ class ViewController: UIViewController {
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        //Only draw in the canvas
         let touchPoint = touches.first!.location(in: drawingCanvas)
         print("began at \(touchPoint)")
         
-        currShapeCenter = touchPoint
-        print("new \(self.selectedShapeType)")
-        switch self.selectedShapeType {
-            case "Circle":
-                currShape = Circle( origin:touchPoint, color: currColor)
-            case "Square":
-                currShape = Square( origin:touchPoint, color: currColor)
-            case "Triangle":
-                currShape = Triangle( origin:touchPoint, color: currColor)
-            default:
-                break
+        if self.selectedMode == .draw {
+            currShapeCenter = touchPoint
+            print("new \(self.selectedShapeType)")
+            switch self.selectedShapeType {
+                case .circle:
+                    currShape = Circle(origin: touchPoint, color: currColor)
+                case .square:
+                    currShape = Square(origin: touchPoint, color: currColor)
+                case .triangle:
+                    currShape = Triangle(origin: touchPoint, color: currColor)
+            }
+            
+            //add shape to array
+            if let newCircle = currShape {
+                drawingCanvas?.items.append(newCircle)
+            }
+        } else if self.selectedMode == .erase {
+            if var items = drawingCanvas?.items {
+                //remove top item (last added to items)
+                for i in (0..<items.count).reversed() {
+                    let item = items[i]
+                    if item.contains(point: touchPoint) {
+                        print("remove \(i)")
+                        items.remove(at: i)
+                        drawingCanvas?.items = items
+                        break
+                    }
+
+                }
+            }
+            
         }
-        
-        //add shape to array
-        if let newCircle = currShape {
-            drawingCanvas?.items.append(newCircle)
-        }
-     
-        
+
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        let touchPoint = touches.first!.location(in: drawingCanvas)
+        
+        if self.selectedMode == .draw {
+            let touchPoint = touches.first!.location(in: drawingCanvas)
 
-        let distance = Functions.distance(a: touchPoint, b: (currShapeCenter))
-        
-        currShape?.size = CGFloat(distance)
-        
-        drawingCanvas.setNeedsDisplay()
+            let distance = Functions.distance(a: touchPoint, b: (currShapeCenter))
+            
+            currShape?.size = CGFloat(distance)
+            
+            drawingCanvas.setNeedsDisplay()
+            
+        }
 
     }
 
@@ -69,19 +100,17 @@ class ViewController: UIViewController {
     }
 
 
+    //TARGET ACTIONS
     @IBAction func shapeSelectorChanged(_ sender: UISegmentedControl) {
         let selectedIndex = sender.selectedSegmentIndex
         
         switch selectedIndex {
             case 0:
-                print("Circle selected")
-                selectedShapeType = "Circle"
+                selectedShapeType = .circle
             case 1:
-                print("Square selected")
-                self.selectedShapeType = "Square"
+                selectedShapeType = .square
             case 2:
-                print("Triangle selected")
-                self.selectedShapeType = "Triangle"
+                selectedShapeType = .triangle
             default:
                 break
         }
@@ -105,6 +134,19 @@ class ViewController: UIViewController {
                 break
         }
         
+    }
+    
+    @IBAction func editModeChanged(_ sender: UISegmentedControl) {
+        switch sender.selectedSegmentIndex {
+            case 0:
+                selectedMode = .draw
+            case 1:
+                selectedMode = .move
+            case 2:
+                selectedMode = .erase
+            default:
+                break
+        }
     }
     
     @IBAction func ClearScreen(_ sender: Any) {
