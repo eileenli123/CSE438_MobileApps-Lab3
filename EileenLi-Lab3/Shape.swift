@@ -37,7 +37,8 @@ class Shape: DrawingItem {
         self.center = origin
         self.color = color
     }
-    
+
+
     func draw() {
         fatalError("IMPLEMENT THIS")
     }
