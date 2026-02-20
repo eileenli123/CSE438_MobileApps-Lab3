@@ -37,6 +37,18 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // Pinch Gesture for resizing
+        let pinchGestureRecognizer = UIPinchGestureRecognizer(target: self, action: #selector(handlePinch(_:)))
+        drawingCanvas?.addGestureRecognizer(pinchGestureRecognizer)
+    }
+    
+    @objc func handlePinch(_ sender: UIPinchGestureRecognizer) {
+        if selectedMode == .move, let shape = currShape {
+            shape.size *= sender.scale
+            sender.scale = 1
+            drawingCanvas?.setNeedsDisplay()
+        }
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
