@@ -41,12 +41,25 @@ class ViewController: UIViewController {
         // Pinch Gesture for resizing
         let pinchGestureRecognizer = UIPinchGestureRecognizer(target: self, action: #selector(handlePinch(_:)))
         drawingCanvas?.addGestureRecognizer(pinchGestureRecognizer)
+        
+        let rotationGestureRecognizer = UIRotationGestureRecognizer(target: self, action: #selector(handleRotation(_:)))
+        drawingCanvas?.addGestureRecognizer(rotationGestureRecognizer)
     }
     
     @objc func handlePinch(_ sender: UIPinchGestureRecognizer) {
         if selectedMode == .move, let shape = currShape {
             shape.size *= sender.scale
-            sender.scale = 1
+            sender.scale = 1 // reset scale to precent continuous scaling
+            drawingCanvas?.setNeedsDisplay()
+        }
+    }
+    
+    @objc func handleRotation(_ sender: UIRotationGestureRecognizer) {
+        if selectedMode == .move, let shape = currShape {
+            print("rotating to \(sender.rotation)")
+            let rotation = sender.rotation
+            shape.rotation += sender.rotation
+            sender.rotation = 0  // Reset rotation to prevent continuous rotation
             drawingCanvas?.setNeedsDisplay()
         }
     }
@@ -119,7 +132,7 @@ class ViewController: UIViewController {
             
             
             
-        } else if self.selectedMode == .move && currShape != nil {
+        } else if self.selectedMode == .move && currShape != nil && startMoveTouchPoint != nil{
             //move the same distance as mouse move
             let deltaX = startMoveTouchPoint!.x - touchPoint.x
             let deltaY = startMoveTouchPoint!.y - touchPoint.y

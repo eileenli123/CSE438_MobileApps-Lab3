@@ -18,6 +18,13 @@ class Shape: DrawingItem {
     var color: UIColor
     var cachedPath: UIBezierPath?
     
+    var rotation : CGFloat {
+        didSet {
+            // delete old path when orientation changed
+            cachedPath = nil
+        }
+    }
+    
     var center: CGPoint {
         didSet {
             // delete old path when center changed
@@ -34,6 +41,7 @@ class Shape: DrawingItem {
     
     public required init(origin: CGPoint, color: UIColor){
         self.size = 50
+        self.rotation = .pi
         self.center = origin
         self.color = color
     }
@@ -45,5 +53,20 @@ class Shape: DrawingItem {
     
     func contains(point: CGPoint) -> Bool {
         fatalError("IMPLEMENT THIS")
+    }
+    
+    // Helper function to apply rotation
+    func applyRotation(to path: UIBezierPath) -> UIBezierPath {
+        
+        //rotated trasnform around (0,0): move shape to 0,0 --> rotate --> move back
+        var transform = CGAffineTransform.identity
+        transform = transform.translatedBy(x: center.x, y: center.y)
+        transform = transform.rotated(by: rotation)
+        transform = transform.translatedBy(x: -center.x, y: -center.y)
+  
+        // Apply the transformation to the path
+        path.apply(transform)
+        
+        return path
     }
 }

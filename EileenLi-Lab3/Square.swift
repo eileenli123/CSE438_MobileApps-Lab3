@@ -17,7 +17,7 @@ class Square: Shape {
         // size or position changed --> recalculate path
         if cachedPath == nil || cachedPath?.bounds.size.width != size || cachedPath?.bounds.origin != center {
             let rect = CGRect(x: center.x - size, y: center.y - size, width: size*2, height: size*2)
-            cachedPath = UIBezierPath(rect: rect)
+            cachedPath = applyRotation(to: UIBezierPath(rect: rect))
         }
 
         // Use the cached path for drawing

@@ -30,7 +30,7 @@ class Triangle: Shape {
             path.addLine(to: CGPoint(x: xAxis, y: yAxis - height / 2))  // Top
             path.close()
             
-            cachedPath = path
+            cachedPath = applyRotation(to: path)
         }
         
         // Use the cached path for drawing
@@ -49,7 +49,7 @@ class Triangle: Shape {
     
     
     override func contains(point: CGPoint) -> Bool {
-        //check cricle inside triangle 
+        //check cricle inside triangle
         let width = size * 2
         let height = width * 0.866
         
