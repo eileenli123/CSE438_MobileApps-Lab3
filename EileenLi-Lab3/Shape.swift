@@ -15,27 +15,20 @@ import UIKit
 
 /// A `DrawingItem` that draws some shape to the screen.
 class Shape: DrawingItem {
+    enum ShapeType {
+        case circle
+        case square
+        case triangle
+    }
+    
     var color: UIColor
     var cachedPath: UIBezierPath?
-    var isFilled: Bool = true
-    var rotation : CGFloat {
-        didSet {
-            // delete old path when orientation changed
-            cachedPath = nil
-        }
-    }
-    var center: CGPoint {
-        didSet {
-            // delete old path when center changed
-            cachedPath = nil
-        }
-    }
-    var size: CGFloat {
-        didSet {
-            // delete old path when size changed
-            cachedPath = nil
-        }
-    }
+    var selectedShape: ShapeType = .circle
+    
+    // delete old path when val changed
+    var rotation : CGFloat { didSet { cachedPath = nil}}
+    var center: CGPoint {didSet {cachedPath = nil}}
+    var size: CGFloat {didSet {cachedPath = nil}}
     
     //required from drawingItem
     public required init(origin: CGPoint, color: UIColor){
@@ -43,25 +36,47 @@ class Shape: DrawingItem {
         self.rotation = 0
         self.center = origin
         self.color = color
-        self.isFilled = true
     }
     
-    //additional attr of isFilled
-    public init(origin: CGPoint, color: UIColor, isFilled: Bool){
+
+    public init(origin: CGPoint, color: UIColor, shape: ShapeType){
         self.size = 50
-        self.rotation = .pi
+        self.rotation = 0
         self.center = origin
         self.color = color
-        self.isFilled = isFilled
+        self.selectedShape = shape
     }
 
 
     func draw() {
-        fatalError("IMPLEMENT THIS")
+        fatalError("A SHAPE SHOULD BE FILLED OR OUTLINE")
     }
     
     func contains(point: CGPoint) -> Bool {
-        fatalError("IMPLEMENT THIS")
+        switch self.selectedShape {
+        case .circle:
+            let distance = Functions.distance(a: center, b: point)
+            return distance <= size
+        case .square:
+            //define square bounds
+            let minX = center.x - size / 2
+            let maxX = center.x + size / 2
+            let minY = center.y - size / 2
+            let maxY = center.y + size / 2
+            
+            //check in bounds
+            return point.x >= minX && point.x <= maxX && point.y >= minY && point.y <= maxY
+        case .triangle:
+            let width = size * 2
+            let height = width * 0.866
+            
+            let radius = height / 2
+            
+            let distance = Functions.distance(a: point, b: center)
+            
+            return distance <= radius
+        
+        }
     }
     
     // Helper function to apply rotation
@@ -77,5 +92,30 @@ class Shape: DrawingItem {
         path.apply(transform)
         
         return path
+    }
+    
+    //helper for getting path based on shapeType
+    func getShapePath() -> UIBezierPath {
+        switch self.selectedShape {
+        case .circle:
+            return UIBezierPath(arcCenter: center, radius: size, startAngle: 0, endAngle: 2 * .pi, clockwise: true)
+        case .square:
+            let rect = CGRect(x: center.x - size, y: center.y - size, width: size*2, height: size*2)
+            return applyRotation(to: UIBezierPath(rect: rect))
+        case .triangle:
+            let path = UIBezierPath()
+            let xAxis = center.x
+            let yAxis = center.y
+            let width = size * 2    // base (same as diameter of circle)
+            let height = width * 0.866    // equilateral height is approx 0.866 of base
+
+            path.move(to: CGPoint(x: xAxis - width / 2, y: yAxis + height / 2))  // Left
+            path.addLine(to: CGPoint(x: xAxis + width / 2, y: yAxis + height / 2))  // Right
+            path.addLine(to: CGPoint(x: xAxis, y: yAxis - height / 2))  // Top
+            path.close()
+            
+            return applyRotation(to: path)
+        
+        }
     }
 }

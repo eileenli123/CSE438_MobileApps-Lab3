@@ -142,7 +142,6 @@
                         <outlet property="ColorWell" destination="sRs-9u-Nh8" id="tQu-IS-iLN"/>
                         <outlet property="RedBtn" destination="H2K-oH-ZWE" id="b9D-tg-LZG"/>
                         <outlet property="SelectedColorBG" destination="bbF-Av-db1" id="ZJ2-CI-y6k"/>
-                        <outlet property="YellowBtn" destination="6i3-tZ-aKQ" id="Yag-HT-Z8w"/>
                         <outlet property="drawingCanvas" destination="FGA-SB-t6u" id="SWl-dh-YnF"/>
                     </connections>
                 </viewController>

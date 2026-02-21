@@ -27,25 +27,17 @@ class ViewController: UIViewController {
     
     @IBOutlet weak var SelectedColorBG: UIView!
     @IBOutlet weak var RedBtn: UIButton!
-    @IBOutlet weak var YellowBtn: UIButton!
-    
-    
-    
     
     //drawing selections
-    var selectedShapeType: ShapeOptions = .circle
+    var selectedShapeType: Shape.ShapeType = .circle
     var selectedMode: EditModes = .draw
-    
     var selectedColorButton: UIButton?
-    
     var currColor = UIColor.red
-    
     var filledShape = true
     
-    var colorWellColor : UIColor?
+    //track which shape is currently being drawn or moved
     var currShapeCenter = CGPoint(x: 0, y: 0)
     var currShape: Shape?
-    
     var startMoveTouchPoint: CGPoint? = CGPoint(x: 0, y: 0)
 
     @IBOutlet weak var drawingCanvas: DrawingView!
@@ -110,20 +102,18 @@ class ViewController: UIViewController {
         
         if self.selectedMode == .draw {
             currShapeCenter = touchPoint
-            print("new \(self.selectedShapeType)")
-            switch self.selectedShapeType {
-                case .circle:
-                    currShape = Circle(origin: touchPoint, color: currColor, isFilled: filledShape)
-                case .square:
-                    currShape = Square(origin: touchPoint, color: currColor, isFilled: filledShape)
-                case .triangle:
-                    currShape = Triangle(origin: touchPoint, color: currColor, isFilled: filledShape)
+            
+            if self.filledShape {
+                currShape = SolidShape(origin: touchPoint, color: currColor, shape: selectedShapeType)
+            } else {
+                currShape = OutlineShape(origin: touchPoint, color: currColor, shape: selectedShapeType)
             }
             
             //add shape to array
-            if let newCircle = currShape {
-                drawingCanvas?.items.append(newCircle)
+            if let newShape = currShape {
+                drawingCanvas?.items.append(newShape)
             }
+            
         } else if self.selectedMode == .erase {
             if var items = drawingCanvas?.items {
                 //remove top item (last added to items)
