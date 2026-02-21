@@ -22,13 +22,27 @@ class ViewController: UIViewController {
         case erase
     }
     
+    
+    @IBOutlet weak var ColorWell: UIColorWell!
+    
+    @IBOutlet weak var SelectedColorBG: UIView!
+    @IBOutlet weak var RedBtn: UIButton!
+    @IBOutlet weak var YellowBtn: UIButton!
+    
+    
+    
+    
     //drawing selections
     var selectedShapeType: ShapeOptions = .circle
     var selectedMode: EditModes = .draw
+    
+    var selectedColorButton: UIButton?
+    
     var currColor = UIColor.red
+    
     var filledShape = true
     
-    
+    var colorWellColor : UIColor?
     var currShapeCenter = CGPoint(x: 0, y: 0)
     var currShape: Shape?
     
@@ -38,14 +52,41 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        print("view did load")
         
+ 
         // Pinch Gesture for resizing
         let pinchGestureRecognizer = UIPinchGestureRecognizer(target: self, action: #selector(handlePinch(_:)))
         drawingCanvas?.addGestureRecognizer(pinchGestureRecognizer)
         
         let rotationGestureRecognizer = UIRotationGestureRecognizer(target: self, action: #selector(handleRotation(_:)))
         drawingCanvas?.addGestureRecognizer(rotationGestureRecognizer)
+        
+        
+        self.view.sendSubviewToBack(SelectedColorBG)
+        
+        selectedColorButton = RedBtn
+
+        ColorWell.addTarget(self,action: #selector(colorWellColorChanged(_:)),for: .valueChanged)
+        
+  
     }
+    
+    
+    @objc func colorWellColorChanged(_ sender: UIColorWell) {
+        print("Color well color changed")
+        //set curr color btn to new color
+        currColor = sender.selectedColor ?? .black
+
+        if let selectedColorButton = selectedColorButton,
+           var config = selectedColorButton.configuration {
+
+            config.background.backgroundColor = currColor
+            selectedColorButton.configuration = config
+        }
+    }
+    
+
     
     @objc func handlePinch(_ sender: UIPinchGestureRecognizer) {
         if selectedMode == .move, let shape = currShape {
@@ -58,7 +99,6 @@ class ViewController: UIViewController {
     @objc func handleRotation(_ sender: UIRotationGestureRecognizer) {
         if selectedMode == .move, let shape = currShape {
             print("rotating to \(sender.rotation)")
-            let rotation = sender.rotation
             shape.rotation += sender.rotation
             sender.rotation = 0  // Reset rotation to prevent continuous rotation
             drawingCanvas?.setNeedsDisplay()
@@ -67,7 +107,6 @@ class ViewController: UIViewController {
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         let touchPoint = touches.first!.location(in: drawingCanvas)
-        print("began at \(touchPoint)")
         
         if self.selectedMode == .draw {
             currShapeCenter = touchPoint
@@ -153,16 +192,51 @@ class ViewController: UIViewController {
 
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        let touchPoint = touches.first!.location(in: drawingCanvas)
-        print("ended at \(touchPoint)")
+        //let touchPoint = touches.first!.location(in: drawingCanvas)
         
         startMoveTouchPoint = nil
         currShape = nil
         drawingCanvas.setNeedsDisplay()
     }
-
+    
+    //Helper for any color btn clicked
+    func colorBtnClicked(_ sender: UIButton){
+        // Set the background view to match the button's position
+        let buttonFrame = sender.frame
+        SelectedColorBG.frame = CGRect(x: buttonFrame.minX-5, y: buttonFrame.minY-5, width: buttonFrame.size.width+10, height: buttonFrame.size.height+10)
+        
+        selectedColorButton = sender
+        
+        if let config = sender.configuration {
+            currColor = config.background.backgroundColor ?? .black
+        }
+        
+        self.view.sendSubviewToBack(SelectedColorBG)
+    }
+    
 
     //TARGET ACTIONS
+    @IBAction func FirstColorBtnClicked(_ sender: UIButton) {
+        colorBtnClicked(sender)
+    }
+    
+    @IBAction func SecondColorBtnClicked(_ sender: UIButton) {
+        colorBtnClicked(sender)
+    }
+    
+    @IBAction func ThirdColorBtnClicked(_ sender: UIButton) {
+        colorBtnClicked(sender)
+    }
+    
+    @IBAction func FourthColorBtnClicked(_ sender: UIButton) {
+        colorBtnClicked(sender)
+    }
+    
+    @IBAction func FifthColorBtnClicked(_ sender: UIButton) {
+        colorBtnClicked(sender)
+    }
+    
+    
     @IBAction func shapeSelectorChanged(_ sender: UISegmentedControl) {
         let selectedIndex = sender.selectedSegmentIndex
         
@@ -178,25 +252,6 @@ class ViewController: UIViewController {
         }
     }
     
-    @IBAction func colorSelectorChanged(_ sender: UISegmentedControl) {
-
-        switch sender.selectedSegmentIndex {
-            case 0:
-            self.currColor = .red
-            case 1:
-            self.currColor = .yellow
-            case 2:
-            self.currColor = .green
-            case 3:
-            self.currColor = .blue
-            case 4:
-            self.currColor = .purple
-            
-            default:
-                break
-        }
-        
-    }
     
     @IBAction func editModeChanged(_ sender: UISegmentedControl) {
         switch sender.selectedSegmentIndex {
@@ -210,6 +265,8 @@ class ViewController: UIViewController {
                 break
         }
     }
+    
+
     
     @IBAction func fillToggleChanged(_ sender: UISwitch) {
         self.filledShape = sender.isOn
