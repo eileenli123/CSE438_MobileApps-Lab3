@@ -29,6 +29,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var SelectedColorBG: UIView!
     @IBOutlet weak var RedBtn: UIButton!
     
+    @IBOutlet weak var DrawMenuView: UIView!
     //drawing selections
     var selectedShapeType: Shape.ShapeType = .circle
     var selectedMode: EditModes = .draw
@@ -45,6 +46,7 @@ class ViewController: UIViewController {
     var moves: [[DrawingItem]] = [[]]
     var editCount = 0
     
+    var isLongPressed: Bool = false
 
     @IBOutlet weak var drawingCanvas: DrawingView!
     
@@ -57,9 +59,15 @@ class ViewController: UIViewController {
         let pinchGestureRecognizer = UIPinchGestureRecognizer(target: self, action: #selector(handlePinch(_:)))
         drawingCanvas?.addGestureRecognizer(pinchGestureRecognizer)
         
+        // Rotate gesture to rotate shape
         let rotationGestureRecognizer = UIRotationGestureRecognizer(target: self, action: #selector(handleRotation(_:)))
         drawingCanvas?.addGestureRecognizer(rotationGestureRecognizer)
         
+        // Long Press to duplicate shape
+        let longPress = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(_:)))
+        longPress.minimumPressDuration = 0.5
+        drawingCanvas.addGestureRecognizer(longPress)
+
         
         self.view.sendSubviewToBack(SelectedColorBG)
         
@@ -70,8 +78,44 @@ class ViewController: UIViewController {
         UndoBtn.isHidden = true
     }
     
+    @objc func handleLongPress(_ sender: UILongPressGestureRecognizer) {
+        
+            // Only trigger once when gesture begins
+        if self.selectedMode == .draw && sender.state == .began {
+
+                isLongPressed = true
+                
+                let touchPoint = sender.location(in: drawingCanvas)
+
+                // Find topmost shape at that point
+                for item in drawingCanvas.items.reversed() {
+
+                    if item.contains(point: touchPoint),
+                       let shape = item as? Shape {
+
+                        print("Duplicating shape")
+
+                        let newShape = shape.copy()
+
+                        // Offset slightly so we can see it
+                        newShape.center.x += 20
+                        newShape.center.y += 20
+
+                        drawingCanvas.items.append(newShape)
+
+                        // Save state for undo
+                        saveSnapshot()
+
+                        drawingCanvas.setNeedsDisplay()
+
+                        break
+                    }
+                }
+            }
+        
+    }
+    
     @objc func colorWellColorChanged(_ sender: UIColorWell) {
-        print("Color well color changed")
         //set curr color btn to new color
         currColor = sender.selectedColor ?? .black
 
@@ -115,25 +159,7 @@ class ViewController: UIViewController {
         if self.selectedMode == .draw {
             currShapeCenter = touchPoint
             
-            if self.filledShape {
-                currShape = SolidShape(origin: touchPoint, color: currColor, shape: selectedShapeType)
-            } else {
-                currShape = OutlineShape(origin: touchPoint, color: currColor, shape: selectedShapeType)
-            }
-            
-            //add shape to array
-            if let newShape = currShape {
-                //save before changes
-                print ("index \(editCount)")
-                
-                UndoBtn.isHidden = false
-                
-                editCount+=1
-                
-                drawingCanvas?.items.append(newShape)
-                saveSnapshot()
-            }
-            
+
         } else if self.selectedMode == .erase {
             if var items = drawingCanvas?.items {
                 //remove top item (last added to items)
@@ -178,6 +204,21 @@ class ViewController: UIViewController {
         let touchPoint = touches.first!.location(in: drawingCanvas)
         
         if self.selectedMode == .draw {
+            if self.filledShape {
+                currShape = SolidShape(origin: currShapeCenter, color: currColor, shape: selectedShapeType)
+            } else {
+                currShape = OutlineShape(origin: currShapeCenter, color: currColor, shape: selectedShapeType)
+            }
+            if let newShape = currShape {
+                //save before changes
+                print ("index \(editCount)")
+                
+                UndoBtn.isHidden = false
+                
+                editCount+=1
+                
+                drawingCanvas?.items.append(newShape)
+            }
             
             let distance = Functions.distance(a: touchPoint, b: (currShapeCenter))
             
@@ -204,11 +245,34 @@ class ViewController: UIViewController {
     }
     
     
-
-    
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        //let touchPoint = touches.first!.location(in: drawingCanvas)
-        if self.selectedMode == .move && currShape != nil {
+        if self.selectedMode == .draw {
+            if !isLongPressed && currShape==nil {
+                if self.filledShape {
+                    currShape = SolidShape(origin: currShapeCenter, color: currColor, shape: selectedShapeType)
+                } else {
+                    currShape = OutlineShape(origin: currShapeCenter, color: currColor, shape: selectedShapeType)
+                }
+                
+                //add shape to array
+                if let newShape = currShape {
+                    //save before changes
+                    print ("index \(editCount)")
+                    
+                    UndoBtn.isHidden = false
+                    
+                    editCount+=1
+                    
+                    drawingCanvas?.items.append(newShape)
+                }
+            } else if isLongPressed{
+                isLongPressed = false
+            }
+            
+        }
+        
+        //draw or move ended
+        if currShape != nil {
             saveSnapshot()
         }
 
@@ -274,10 +338,13 @@ class ViewController: UIViewController {
     @IBAction func editModeChanged(_ sender: UISegmentedControl) {
         switch sender.selectedSegmentIndex {
             case 0:
+                DrawMenuView.isHidden = false
                 selectedMode = .draw
             case 1:
+                DrawMenuView.isHidden = true
                 selectedMode = .move
             case 2:
+                DrawMenuView.isHidden = true
                 selectedMode = .erase
             default:
                 break
