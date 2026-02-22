@@ -118,4 +118,30 @@ class Shape: DrawingItem {
         
         }
     }
+    
+    //helper fn to make a deep copy 
+    func copy() -> Shape {
+        let newShape: Shape
+
+        if self is SolidShape {
+            newShape = SolidShape(
+                origin: self.center,
+                color: self.color,
+                shape: self.selectedShape
+            )
+        } else {
+            newShape = OutlineShape(
+                origin: self.center,
+                color: self.color,
+                shape: self.selectedShape,
+            )
+        }
+
+        newShape.size = self.size
+        newShape.rotation = self.rotation
+
+        return newShape
+    }
+
+
 }

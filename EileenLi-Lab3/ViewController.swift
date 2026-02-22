@@ -9,7 +9,7 @@ import UIKit
 
 class ViewController: UIViewController {
     //Reminder: make an array and just add one subview (instead of creating a new subview for every shape)
-
+    
     enum ShapeOptions {
         case circle
         case square
@@ -22,6 +22,7 @@ class ViewController: UIViewController {
         case erase
     }
     
+    @IBOutlet weak var UndoBtn: UIBarButtonItem!
     
     @IBOutlet weak var ColorWell: UIColorWell!
     
@@ -39,6 +40,11 @@ class ViewController: UIViewController {
     var currShapeCenter = CGPoint(x: 0, y: 0)
     var currShape: Shape?
     var startMoveTouchPoint: CGPoint? = CGPoint(x: 0, y: 0)
+    
+    //stores items before change (for undo)
+    var moves: [[DrawingItem]] = [[]]
+    var editCount = 0
+    
 
     @IBOutlet weak var drawingCanvas: DrawingView!
     
@@ -61,9 +67,8 @@ class ViewController: UIViewController {
 
         ColorWell.addTarget(self,action: #selector(colorWellColorChanged(_:)),for: .valueChanged)
         
-  
+        UndoBtn.isHidden = true
     }
-    
     
     @objc func colorWellColorChanged(_ sender: UIColorWell) {
         print("Color well color changed")
@@ -97,6 +102,13 @@ class ViewController: UIViewController {
         }
     }
     
+    func saveSnapshot() {
+        let snapshot = drawingCanvas.items.compactMap {
+            ($0 as? Shape)?.copy()
+        }
+        moves.append(snapshot)
+    }
+    
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         let touchPoint = touches.first!.location(in: drawingCanvas)
         
@@ -111,7 +123,15 @@ class ViewController: UIViewController {
             
             //add shape to array
             if let newShape = currShape {
+                //save before changes
+                print ("index \(editCount)")
+                
+                UndoBtn.isHidden = false
+                
+                editCount+=1
+                
                 drawingCanvas?.items.append(newShape)
+                saveSnapshot()
             }
             
         } else if self.selectedMode == .erase {
@@ -122,7 +142,10 @@ class ViewController: UIViewController {
                     if item.contains(point: touchPoint) {
                         print("remove \(i)")
                         items.remove(at: i)
+                        
                         drawingCanvas?.items = items
+                        saveSnapshot()
+
                         break
                     }
 
@@ -179,11 +202,16 @@ class ViewController: UIViewController {
         drawingCanvas.setNeedsDisplay()
 
     }
+    
+    
 
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         //let touchPoint = touches.first!.location(in: drawingCanvas)
-        
+        if self.selectedMode == .move && currShape != nil {
+            saveSnapshot()
+        }
+
         startMoveTouchPoint = nil
         currShape = nil
         drawingCanvas.setNeedsDisplay()
@@ -262,8 +290,29 @@ class ViewController: UIViewController {
         self.filledShape = sender.isOn
     }
     
+    @IBAction func UndoBtnClicked(_ sender: Any) {
+        if moves.count > 1 {
+            moves.removeLast()
+            print(moves.count)
+            if moves.count == 1 {
+                
+                UndoBtn.isHidden = true
+            }
+            
+            drawingCanvas.items = moves.last!.compactMap {
+                ($0 as? Shape)?.copy()
+            }
+            drawingCanvas.setNeedsDisplay()
+        }
+        print(moves)
+        
+    }
+    
+    
     @IBAction func ClearScreen(_ sender: Any) {
         drawingCanvas?.items = []
+        moves = [[]]
+        UndoBtn.isHidden = true
     }
 }
 

@@ -132,6 +132,20 @@
                         <color key="backgroundColor" systemColor="systemGray6Color"/>
                     </view>
                     <navigationItem key="navigationItem" id="q8t-SK-wFb">
+                        <barButtonItem key="leftBarButtonItem" style="plain" id="AYg-zk-nSQ">
+                            <button key="customView" opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" id="WN8-WS-UXa">
+                                <rect key="frame" x="20" y="4.6666666666666687" width="65.333333333333329" height="34.666666666666664"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="gray" title="Undo"/>
+                                <connections>
+                                    <action selector="UndoBtnClicked:" destination="BYZ-38-t0r" eventType="touchUpInside" id="tNr-yO-zV0"/>
+                                </connections>
+                            </button>
+                            <connections>
+                                <action selector="UndoBtnClicked:" destination="BYZ-38-t0r" id="DjH-nd-fT9"/>
+                            </connections>
+                        </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" title="Clear" id="IEp-ww-YWn">
                             <connections>
                                 <action selector="ClearScreen:" destination="BYZ-38-t0r" id="xwI-kf-iAq"/>
@@ -142,6 +156,7 @@
                         <outlet property="ColorWell" destination="sRs-9u-Nh8" id="tQu-IS-iLN"/>
                         <outlet property="RedBtn" destination="H2K-oH-ZWE" id="b9D-tg-LZG"/>
                         <outlet property="SelectedColorBG" destination="bbF-Av-db1" id="ZJ2-CI-y6k"/>
+                        <outlet property="UndoBtn" destination="AYg-zk-nSQ" id="dbi-ZV-zKq"/>
                         <outlet property="drawingCanvas" destination="FGA-SB-t6u" id="SWl-dh-YnF"/>
                     </connections>
                 </viewController>
