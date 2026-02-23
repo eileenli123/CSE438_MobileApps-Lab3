@@ -15,7 +15,7 @@ import UIKit
 
 /// A `DrawingItem` that draws some shape to the screen.
 class Shape: DrawingItem {
-    enum ShapeType {
+    enum ShapeType: CaseIterable {
         case circle
         case square
         case triangle

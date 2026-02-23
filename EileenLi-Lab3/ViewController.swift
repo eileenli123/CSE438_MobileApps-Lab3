@@ -78,22 +78,23 @@ class ViewController: UIViewController {
         UndoBtn.isHidden = true
     }
     
+
+    
+    
     @objc func handleLongPress(_ sender: UILongPressGestureRecognizer) {
         
-            // Only trigger once when gesture begins
+        // Only trigger once when gesture begins
         if self.selectedMode == .draw && sender.state == .began {
 
                 isLongPressed = true
                 
                 let touchPoint = sender.location(in: drawingCanvas)
 
-                // Find topmost shape at that point
+                // find top most shape to duplicate
                 for item in drawingCanvas.items.reversed() {
 
                     if item.contains(point: touchPoint),
                        let shape = item as? Shape {
-
-                        print("Duplicating shape")
 
                         let newShape = shape.copy()
 
@@ -102,10 +103,7 @@ class ViewController: UIViewController {
                         newShape.center.y += 20
 
                         drawingCanvas.items.append(newShape)
-
-                        // Save state for undo
                         saveSnapshot()
-
                         drawingCanvas.setNeedsDisplay()
 
                         break
@@ -204,27 +202,26 @@ class ViewController: UIViewController {
         let touchPoint = touches.first!.location(in: drawingCanvas)
         
         if self.selectedMode == .draw {
-            if self.filledShape {
-                currShape = SolidShape(origin: currShapeCenter, color: currColor, shape: selectedShapeType)
-            } else {
-                currShape = OutlineShape(origin: currShapeCenter, color: currColor, shape: selectedShapeType)
-            }
-            if let newShape = currShape {
-                //save before changes
-                print ("index \(editCount)")
-                
-                UndoBtn.isHidden = false
-                
-                editCount+=1
-                
-                drawingCanvas?.items.append(newShape)
+            if currShape == nil {
+                if self.filledShape {
+                    currShape = SolidShape(origin: currShapeCenter, color: currColor, shape: selectedShapeType)
+                } else {
+                    currShape = OutlineShape(origin: currShapeCenter, color: currColor, shape: selectedShapeType)
+                }
+                if let newShape = currShape {
+                    //save before changes
+                    print ("index \(editCount)")
+                    
+                    UndoBtn.isHidden = false
+                    
+                    editCount+=1
+                    
+                    drawingCanvas?.items.append(newShape)
+                }
             }
             
             let distance = Functions.distance(a: touchPoint, b: (currShapeCenter))
-            
             currShape?.size = CGFloat(distance)
-            
-            
             
         } else if self.selectedMode == .move && currShape != nil && startMoveTouchPoint != nil{
             //move the same distance as mouse move
@@ -294,6 +291,64 @@ class ViewController: UIViewController {
         }
         
         self.view.sendSubviewToBack(SelectedColorBG)
+    }
+    
+    //helper to clear screen
+    func startNewDrawing(){
+        print("start new drawing")
+        drawingCanvas?.items = []
+        moves = [[]]
+        UndoBtn.isHidden = true
+    }
+    
+    func addRandomShapes(){
+        let numberOfShapes = Int.random(in: 5...10)
+
+        for _ in 0..<numberOfShapes {
+
+            // random position
+            let x = CGFloat.random(in: 50...drawingCanvas.bounds.width - 50)
+            let y = CGFloat.random(in: 100...drawingCanvas.bounds.height - 50)
+
+            // random size
+            let randomSize = CGFloat.random(in: 20...80)
+
+            // random color
+            let randomColor = UIColor(
+                red: CGFloat.random(in: 0...1),
+                green: CGFloat.random(in: 0...1),
+                blue: CGFloat.random(in: 0...1),
+                alpha: 1
+            )
+
+            // random shape type
+            let randomType = Shape.ShapeType.allCases.randomElement()!
+
+            // random fill or outline
+            let isFilled = Bool.random()
+
+            let newShape: Shape
+
+            if isFilled {
+                newShape = SolidShape(origin: CGPoint(x: x, y: y), color: randomColor, shape: randomType)
+            } else {
+                newShape = OutlineShape(origin: CGPoint(x: x, y: y), color: randomColor, shape: randomType)
+            }
+
+            newShape.size = randomSize
+            drawingCanvas.items.append(newShape)
+        }
+
+        saveSnapshot()
+        UndoBtn.isHidden = false
+        drawingCanvas.setNeedsDisplay()
+        
+        
+    }
+    
+    func startRandomDrawing() {
+        startNewDrawing()
+        addRandomShapes()
     }
     
 
@@ -375,11 +430,12 @@ class ViewController: UIViewController {
         
     }
     
+    @IBAction func AddRandomClicked(_ sender: Any) {
+        addRandomShapes()
+    }
     
     @IBAction func ClearScreen(_ sender: Any) {
-        drawingCanvas?.items = []
-        moves = [[]]
-        UndoBtn.isHidden = true
+        startNewDrawing()
     }
 }
 

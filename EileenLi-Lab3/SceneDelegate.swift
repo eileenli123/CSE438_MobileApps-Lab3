@@ -11,7 +11,36 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
 
+    func windowScene(_ windowScene: UIWindowScene,
+                     performActionFor shortcutItem: UIApplicationShortcutItem,
+                     completionHandler: @escaping (Bool) -> Void) {
+        print("quick action clicked")
+        let handled = handleShortCutItem(shortcutItem: shortcutItem)
+        completionHandler(handled)
+    }
 
+    func handleShortCutItem(shortcutItem: UIApplicationShortcutItem) -> Bool {
+        guard let window = self.window,
+              let nav = window.rootViewController as? UINavigationController,
+              let vc = nav.topViewController as? ViewController else {
+            return false
+        }
+
+        switch shortcutItem.type {
+
+        case "com.eileen.newdrawing":
+            vc.startNewDrawing()
+            return true
+            
+        case "com.eileen.randomdrawing":
+            vc.startRandomDrawing()
+            return true
+
+        default:
+            return false
+        }
+    }
+    
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
