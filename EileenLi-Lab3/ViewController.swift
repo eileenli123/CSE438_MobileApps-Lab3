@@ -23,13 +23,11 @@ class ViewController: UIViewController {
     }
     
     @IBOutlet weak var UndoBtn: UIBarButtonItem!
-    
     @IBOutlet weak var ColorWell: UIColorWell!
-    
     @IBOutlet weak var SelectedColorBG: UIView!
     @IBOutlet weak var RedBtn: UIButton!
-    
     @IBOutlet weak var DrawMenuView: UIView!
+    
     //drawing selections
     var selectedShapeType: Shape.ShapeType = .circle
     var selectedMode: EditModes = .draw
@@ -54,7 +52,6 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         print("view did load")
         
- 
         // Pinch Gesture for resizing
         let pinchGestureRecognizer = UIPinchGestureRecognizer(target: self, action: #selector(handlePinch(_:)))
         drawingCanvas?.addGestureRecognizer(pinchGestureRecognizer)
@@ -75,10 +72,8 @@ class ViewController: UIViewController {
 
         ColorWell.addTarget(self,action: #selector(colorWellColorChanged(_:)),for: .valueChanged)
         
-        UndoBtn.isHidden = true
+        UndoBtn.isHidden = true //hide until first move
     }
-    
-
     
     
     @objc func handleLongPress(_ sender: UILongPressGestureRecognizer) {
@@ -423,15 +418,15 @@ class ViewController: UIViewController {
             }
             drawingCanvas.setNeedsDisplay()
         }
-        print(moves)
 
     }
     
-    @IBAction func AddRandomClicked(_ sender: Any) {
+    @IBAction func addRandomClicked(_ sender: Any) {
         addRandomShapes()
     }
     
-    @IBAction func ClearScreen(_ sender: Any) {
+    
+    @IBAction func clearScreen(_ sender: Any) {
         startNewDrawing()
     }
 }

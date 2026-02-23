@@ -152,18 +152,18 @@
                                 <action selector="UndoBtnClicked:" destination="BYZ-38-t0r" id="DjH-nd-fT9"/>
                             </connections>
                         </barButtonItem>
-                        <button key="titleView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" id="ml9-xl-M4t">
+                        <button key="titleView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" id="09f-6A-0zf">
                             <rect key="frame" x="135.33333333333331" y="4.6666666666666679" width="122" height="34.666666666666657"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <state key="normal" title="Button"/>
                             <buttonConfiguration key="configuration" style="gray" title="Add Random"/>
                             <connections>
-                                <action selector="AddRandomClicked:" destination="BYZ-38-t0r" eventType="touchUpInside" id="lut-gB-U4v"/>
+                                <action selector="addRandomClicked:" destination="BYZ-38-t0r" eventType="touchUpInside" id="oIM-L2-fSW"/>
                             </connections>
                         </button>
                         <barButtonItem key="rightBarButtonItem" title="Clear" id="IEp-ww-YWn">
                             <connections>
-                                <action selector="ClearScreen:" destination="BYZ-38-t0r" id="xwI-kf-iAq"/>
+                                <action selector="clearScreen:" destination="BYZ-38-t0r" id="hAJ-HG-676"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
