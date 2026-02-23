@@ -353,26 +353,23 @@ class ViewController: UIViewController {
     
 
     //TARGET ACTIONS
-    @IBAction func FirstColorBtnClicked(_ sender: UIButton) {
+    @IBAction func firstColorBtnClicked(_ sender: UIButton) {
         colorBtnClicked(sender)
     }
     
-    @IBAction func SecondColorBtnClicked(_ sender: UIButton) {
+    @IBAction func secondColorBtnClicked(_ sender: UIButton) {
         colorBtnClicked(sender)
     }
-    
-    @IBAction func ThirdColorBtnClicked(_ sender: UIButton) {
+    @IBAction func thirdColorBtnClicked(_ sender: UIButton) {
         colorBtnClicked(sender)
     }
-    
-    @IBAction func FourthColorBtnClicked(_ sender: UIButton) {
+    @IBAction func fourthColorBtnClicked(_ sender: UIButton) {
         colorBtnClicked(sender)
     }
-    
-    @IBAction func FifthColorBtnClicked(_ sender: UIButton) {
+    @IBAction func fifthColorBtnClicked(_ sender: UIButton) {
         colorBtnClicked(sender)
     }
-    
+
     
     @IBAction func shapeSelectorChanged(_ sender: UISegmentedControl) {
         let selectedIndex = sender.selectedSegmentIndex
@@ -427,7 +424,7 @@ class ViewController: UIViewController {
             drawingCanvas.setNeedsDisplay()
         }
         print(moves)
-        
+
     }
     
     @IBAction func AddRandomClicked(_ sender: Any) {

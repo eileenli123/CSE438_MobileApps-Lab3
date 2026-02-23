@@ -40,7 +40,7 @@
                                             </backgroundConfiguration>
                                         </buttonConfiguration>
                                         <connections>
-                                            <action selector="FirstColorBtnClicked:" destination="BYZ-38-t0r" eventType="touchUpInside" id="hJI-sv-XT1"/>
+                                            <action selector="firstColorBtnClicked:" destination="BYZ-38-t0r" eventType="touchUpInside" id="PEM-BK-5HT"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6i3-tZ-aKQ">
@@ -53,7 +53,7 @@
                                             </backgroundConfiguration>
                                         </buttonConfiguration>
                                         <connections>
-                                            <action selector="SecondColorBtnClicked:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Fdr-gx-Nzb"/>
+                                            <action selector="secondColorBtnClicked:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Igv-Hk-I1o"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yHz-ZY-qEY">
@@ -66,7 +66,7 @@
                                             </backgroundConfiguration>
                                         </buttonConfiguration>
                                         <connections>
-                                            <action selector="FifthColorBtnClicked:" destination="BYZ-38-t0r" eventType="touchUpInside" id="uDb-FE-A8C"/>
+                                            <action selector="fifthColorBtnClicked:" destination="BYZ-38-t0r" eventType="touchUpInside" id="E5Z-ms-ofR"/>
                                         </connections>
                                     </button>
                                     <colorWell contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="sRs-9u-Nh8">
@@ -83,7 +83,7 @@
                                             </backgroundConfiguration>
                                         </buttonConfiguration>
                                         <connections>
-                                            <action selector="FourthColorBtnClicked:" destination="BYZ-38-t0r" eventType="touchUpInside" id="HH0-Q9-BJa"/>
+                                            <action selector="fourthColorBtnClicked:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Ubn-pS-ASB"/>
                                         </connections>
                                     </button>
                                     <segmentedControl opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="6vp-bx-m4r">
@@ -115,7 +115,7 @@
                                             </backgroundConfiguration>
                                         </buttonConfiguration>
                                         <connections>
-                                            <action selector="ThirdColorBtnClicked:" destination="BYZ-38-t0r" eventType="touchUpInside" id="zDR-IX-Cyc"/>
+                                            <action selector="thirdColorBtnClicked:" destination="BYZ-38-t0r" eventType="touchUpInside" id="5ua-jm-PXi"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -152,7 +152,7 @@
                                 <action selector="UndoBtnClicked:" destination="BYZ-38-t0r" id="DjH-nd-fT9"/>
                             </connections>
                         </barButtonItem>
-                        <button key="titleView" opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" id="ml9-xl-M4t">
+                        <button key="titleView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" id="ml9-xl-M4t">
                             <rect key="frame" x="135.33333333333331" y="4.6666666666666679" width="122" height="34.666666666666657"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <state key="normal" title="Button"/>
